@@ -1,0 +1,54 @@
+MODEL:
+  META_ARCHITECTURE: "GeneralizedRCNN"
+#  WEIGHT: "catalog://Caffe2Detectron/COCO/35861795/e2e_mask_rcnn_R-101-FPN_1x"
+#  WEIGHT: "/homes/my_d/maskrcnn-benchmark-master/tools/result_mask/model_no_last_layers_segm_R_101.pth"
+  WEIGHT: "/homes/my_d/my_d/maskrcnn-isic/mask_train_with_segm/model_0005200.pth"
+  BACKBONE:
+    CONV_BODY: "R-101-FPN"
+    OUT_CHANNELS: 256
+  RPN:
+    USE_FPN: True
+    ANCHOR_STRIDE: (4, 8, 16, 32, 64)
+    PRE_NMS_TOP_N_TRAIN: 2000
+    PRE_NMS_TOP_N_TEST: 1000
+    POST_NMS_TOP_N_TEST: 1000
+    FPN_POST_NMS_TOP_N_TEST: 1000
+  ROI_HEADS:
+    USE_FPN: True
+    DETECTIONS_PER_IMG: 100
+    NMS: 0.
+  ROI_BOX_HEAD:
+    POOLER_RESOLUTION: 7
+    POOLER_SCALES: (0.25, 0.125, 0.0625, 0.03125)
+    POOLER_SAMPLING_RATIO: 2
+    FEATURE_EXTRACTOR: "FPN2MLPFeatureExtractor"
+    PREDICTOR: "FPNPredictor"
+    NUM_CLASSES: 2
+  ROI_MASK_HEAD:
+    POOLER_SCALES: (0.25, 0.125, 0.0625, 0.03125)
+    FEATURE_EXTRACTOR: "MaskRCNNFPNFeatureExtractor"
+    PREDICTOR: "MaskRCNNC4Predictor"
+    POOLER_RESOLUTION: 14
+    POOLER_SAMPLING_RATIO: 2
+    RESOLUTION: 28
+    SHARE_BOX_FEATURE_EXTRACTOR: False
+  MASK_ON: True
+DATASETS:
+  TRAIN: ("isic_train",)
+  TEST: ("isic_eval",)
+DATALOADER:
+  SIZE_DIVISIBILITY: 32
+  NUM_WORKERS: 0
+INPUT:
+  MAX_SIZE_TEST: 1333
+  MAX_SIZE_TRAIN: 1333
+  MIN_SIZE_TEST: 800
+  MIN_SIZE_TRAIN: 800
+SOLVER:
+  CHECKPOINT_PERIOD: 200
+  IMS_PER_BATCH: 4
+#  IMS_PER_BATCH: 6
+TEST:
+  IMS_PER_BATCH: 8
+OUTPUT_DIR: './result_mask/'
+TENSORBOARD_EXPERIMENT: "./result_mask/tensorboard/"
